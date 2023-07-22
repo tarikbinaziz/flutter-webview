@@ -33,14 +33,18 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
   showDialogBox() {
     showDialog(
-      barrierDismissible: false,
+        barrierDismissible: false,
         context: context,
         builder: (_) => CupertinoAlertDialog(
               title: Text("No internet"),
               content: Text("Please check your internet"),
               actions: [
-                CupertinoButton.filled(
-                    child: Text("Retry"),
+                CupertinoButton(
+                    child: Text(
+                      "Retry",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    color: Colors.red,
                     onPressed: () async {
                       Navigator.pop(context);
                       checkInternet();
@@ -67,49 +71,38 @@ class _WebViewScreenState extends State<WebViewScreen> {
     super.initState();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.arrow_back_ios),
-          ),
-          title: Container(
-            padding: EdgeInsets.symmetric(horizontal: 4),
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(12)),
-            child: TextField(
-              textAlignVertical: TextAlignVertical.center,
-              decoration: InputDecoration(
-                  hintText: "eg.....", prefixIcon: Icon(Icons.search)),
+      body: SafeArea(
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Column(
+              children: [
+                Expanded(
+                    child: InAppWebView(
+                  pullToRefreshController: pullToRefreshController,
+                  onLoadStart:(controller, url){
+
+                  },
+                  onLoadStop: (controller, url) {
+                    pullToRefreshController!.endRefreshing();
+
+                  },
+                  onWebViewCreated: (controller) =>
+                      appWebViewController = controller,
+                  initialUrlRequest: URLRequest(url: Uri.parse(initialUrl)),
+
+                )),
+
+              ],
             ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () {
-                appWebViewController!.reload();
-              },
-              icon: Icon(Icons.refresh),
-            )
           ],
         ),
-        body:
-        Column(
-                children: [
-                  Expanded(
-                      child: InAppWebView(
-                    pullToRefreshController: pullToRefreshController,
-                    onLoadStop: (controller, url) {
-                      pullToRefreshController!.endRefreshing();
-                    },
-                    onWebViewCreated: (controller) =>
-                        appWebViewController = controller,
-                    initialUrlRequest:
-                        URLRequest(url: Uri.parse(initialUrl)),
-                  )),
-                ],
-              ),
-        );
+      ),
+    );
   }
 }

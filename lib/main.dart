@@ -14,9 +14,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Flutter Webview",
-      theme: ThemeData(
-
-      ),
       home: WebViewScreen(),
 
     );
